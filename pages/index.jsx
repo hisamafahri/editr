@@ -1,9 +1,16 @@
 import Head from 'next/head'
+import Header from '../components/Header'
+import StyleBar from '../components/StyleBar'
+
 
 export default function Home() {
   return (
-    <div>
-      <p>Hello, World!</p>
-    </div>
+    <>
+      <Head>
+        <title>Editr. - yet another simple Rich Text Editor</title>
+      </Head>
+      <Header />
+      <StyleBar />
+    </>
   )
 }
