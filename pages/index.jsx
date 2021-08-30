@@ -15,6 +15,24 @@ const CustomEditor = {
     return !!match
   },
 
+  isItalicMarkActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.italic === true,
+      universal: true,
+    })
+
+    return !!match
+  },
+
+  isUnderlineMarkActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.underline === true,
+      universal: true,
+    })
+
+    return !!match
+  },
+
   isCodeBlockActive(editor) {
     const [match] = Editor.nodes(editor, {
       match: n => n.type === 'code',
@@ -31,6 +49,26 @@ const CustomEditor = {
       { match: n => Text.isText(n), split: true }
     )
   },
+
+  toggleItalicMark(editor) {
+    const isActive = CustomEditor.isItalicMarkActive(editor)
+    Transforms.setNodes(
+      editor,
+      { italic: isActive ? null : true },
+      { match: n => Text.isText(n), split: true }
+    )
+  },
+
+
+  toggleUnderlineMark(editor) {
+    const isActive = CustomEditor.isUnderlineMarkActive(editor)
+    Transforms.setNodes(
+      editor,
+      { underline: isActive ? null : true },
+      { match: n => Text.isText(n), split: true }
+    )
+  },
+
 
   toggleCodeBlock(editor) {
     const isActive = CustomEditor.isCodeBlockActive(editor)
@@ -101,6 +139,18 @@ export default function Home() {
                     CustomEditor.toggleBoldMark(editor)
                     break
                   }
+
+                  case 'u': {
+                    event.preventDefault()
+                    CustomEditor.toggleUnderlineMark(editor)
+                    break
+                  }
+
+                  case 'i': {
+                    event.preventDefault()
+                    CustomEditor.toggleItalicMark(editor)
+                    break
+                  }
                 }
               }}
             />
@@ -113,10 +163,11 @@ export default function Home() {
 
 const Leaf = props => {
   return (
-    <span
-      {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? 'bold' : 'light' }}
-    >
+    <span {...props.attributes} style={{ 
+      fontWeight: props.leaf.bold ? 'bold' : 'light',
+      fontStyle: props.leaf.italic ? 'italic' : 'light',
+      textDecoration: props.leaf.underline ? 'underline' : 'light'
+    }} >
       {props.children}
     </span>
   )
