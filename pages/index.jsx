@@ -41,6 +41,32 @@ const CustomEditor = {
     return !!match
   },
 
+  isAlignLeftActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'leftAlign',
+    })
+
+    return !!match
+  },
+
+  isAlignCenterActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'centerAlign',
+    })
+
+    return !!match
+  },
+
+  isAlignRightActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'rightAlign',
+    })
+
+    return !!match
+  },
+
+  // BORDER =================================================================================================================
+
   toggleBoldMark(editor) {
     const isActive = CustomEditor.isBoldMarkActive(editor)
     Transforms.setNodes(
@@ -78,6 +104,33 @@ const CustomEditor = {
       { match: n => Editor.isBlock(editor, n) }
     )
   },
+
+  toggleAlignLeft(editor) {
+    const isActive = CustomEditor.isAlignLeftActive(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'leftAlign' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
+
+  toggleAlignCenter(editor) {
+    const isActive = CustomEditor.isAlignCenterActive(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'centerAlign' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
+
+  toggleAlignRight(editor) {
+    const isActive = CustomEditor.isAlignRightActive(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'rightAlign' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
 }
 
 export default function Home() {
@@ -102,6 +155,12 @@ export default function Home() {
     switch (props.element.type) {
       case 'code':
         return <CodeElement {...props} />
+      case 'leftAlign':
+        return <LeftAlignElement {...props} />
+      case 'centerAlign':
+        return <CenterAlignElement {...props} />
+      case 'rightAlign':
+        return <RightAlignElement {...props} />
       default:
         return <DefaultElement {...props} />
     }
@@ -151,6 +210,24 @@ export default function Home() {
                     CustomEditor.toggleItalicMark(editor)
                     break
                   }
+
+                  case 'l': {
+                    event.preventDefault()
+                    CustomEditor.toggleAlignLeft(editor)
+                    break
+                  }
+
+                  case 'e': {
+                    event.preventDefault()
+                    CustomEditor.toggleAlignCenter(editor)
+                    break
+                  }
+
+                  case 'r': {
+                    event.preventDefault()
+                    CustomEditor.toggleAlignRight(editor)
+                    break
+                  }
                 }
               }}
             />
@@ -163,13 +240,37 @@ export default function Home() {
 
 const Leaf = props => {
   return (
-    <span {...props.attributes} style={{ 
+    <span {...props.attributes} style={{
       fontWeight: props.leaf.bold ? 'bold' : 'light',
       fontStyle: props.leaf.italic ? 'italic' : 'light',
       textDecoration: props.leaf.underline ? 'underline' : 'light'
     }} >
       {props.children}
     </span>
+  )
+}
+
+const LeftAlignElement = props => {
+  return (
+    <div {...props.attributes} className='text-left'>
+      {props.children}
+    </div>
+  )
+}
+
+const CenterAlignElement = props => {
+  return (
+    <div {...props.attributes} className='text-center'>
+      {props.children}
+    </div>
+  )
+}
+
+const RightAlignElement = props => {
+  return (
+    <div {...props.attributes} className='text-right'>
+      {props.children}
+    </div>
   )
 }
 
