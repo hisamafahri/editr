@@ -2,12 +2,49 @@ import Head from 'next/head'
 import Header from '../components/Header'
 import StyleBar from '../components/StyleBar'
 import React, { useCallback, useMemo, useState } from 'react'
-import { createEditor, Editor, Transforms } from 'slate'
+import { createEditor, Editor, Text, Transforms } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 
+const CustomEditor = {
+  isBoldMarkActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.bold === true,
+      universal: true,
+    })
+
+    return !!match
+  },
+
+  isCodeBlockActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'code',
+    })
+
+    return !!match
+  },
+
+  toggleBoldMark(editor) {
+    const isActive = CustomEditor.isBoldMarkActive(editor)
+    Transforms.setNodes(
+      editor,
+      { bold: isActive ? null : true },
+      { match: n => Text.isText(n), split: true }
+    )
+  },
+
+  toggleCodeBlock(editor) {
+    const isActive = CustomEditor.isCodeBlockActive(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'code' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
+}
 
 export default function Home() {
   const editor = useMemo(() => withReact(createEditor()), [])
+
   const [value, setValue] = useState([
     {
       type: 'paragraph',
@@ -18,6 +55,11 @@ export default function Home() {
       children: [{ text: 'console.log("Hello, world!");' }],
     },
   ])
+
+  const renderLeaf = useCallback(props => {
+    return <Leaf {...props} />
+  }, [])
+
   const renderElement = useCallback(props => {
     switch (props.element.type) {
       case 'code':
@@ -26,6 +68,7 @@ export default function Home() {
         return <DefaultElement {...props} />
     }
   }, [])
+
   return (
     <>
       <Head>
@@ -40,17 +83,24 @@ export default function Home() {
             <Editable
               className='font-light font-rubik w-full'
               renderElement={renderElement}
+              renderLeaf={renderLeaf}
               onKeyDown={event => {
-                if (event.key === '`' && event.ctrlKey) {
-                  event.preventDefault()
-                  const [match] = Editor.nodes(editor, {
-                    match: n => n.type === 'code',
-                  })
-                  Transforms.setNodes(
-                    editor,
-                    { type: match ? 'paragraph' : 'code' },
-                    { match: n => Editor.isBlock(editor, n) }
-                  )
+                if (!event.ctrlKey) {
+                  return
+                }
+
+                switch (event.key) {
+                  case '`': {
+                    event.preventDefault()
+                    CustomEditor.toggleCodeBlock(editor)
+                    break
+                  }
+
+                  case 'b': {
+                    event.preventDefault()
+                    CustomEditor.toggleBoldMark(editor)
+                    break
+                  }
                 }
               }}
             />
@@ -58,6 +108,17 @@ export default function Home() {
         </div>
       </div>
     </>
+  )
+}
+
+const Leaf = props => {
+  return (
+    <span
+      {...props.attributes}
+      style={{ fontWeight: props.leaf.bold ? 'bold' : 'light' }}
+    >
+      {props.children}
+    </span>
   )
 }
 
