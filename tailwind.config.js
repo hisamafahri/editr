@@ -12,7 +12,8 @@ module.exports = {
         'editr-dark-grey': '#B2B2B2',
         'editr-light-grey': '#E5E5E5',
         'editr-xl-grey': '#F5F5F5',
-        'editr-white': '#FFFFFF'
+        'editr-white': '#FFFFFF',
+        'editr-dark-blue' : '#1F2937'
       }
     },
   },
