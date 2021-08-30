@@ -65,6 +65,14 @@ const CustomEditor = {
     return !!match
   },
 
+  isInlineCodeActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.inlineCode === true,
+    })
+
+    return !!match
+  },
+
   // BORDER =================================================================================================================
 
   toggleBoldMark(editor) {
@@ -129,6 +137,15 @@ const CustomEditor = {
       editor,
       { type: isActive ? null : 'rightAlign' },
       { match: n => Editor.isBlock(editor, n) }
+    )
+  },
+
+  toggleInlineCode(editor) {
+    const isActive = CustomEditor.isInlineCodeActive(editor)
+    Transforms.setNodes(
+      editor,
+      { inlineCode: isActive ? null : true },
+      { match: n => Text.isText(n), split: true }
     )
   },
 }
@@ -228,6 +245,12 @@ export default function Home() {
                     CustomEditor.toggleAlignRight(editor)
                     break
                   }
+
+                  case 'q': {
+                    event.preventDefault()
+                    CustomEditor.toggleInlineCode(editor)
+                    break
+                  }
                 }
               }}
             />
@@ -243,8 +266,10 @@ const Leaf = props => {
     <span {...props.attributes} style={{
       fontWeight: props.leaf.bold ? 'bold' : 'light',
       fontStyle: props.leaf.italic ? 'italic' : 'light',
-      textDecoration: props.leaf.underline ? 'underline' : 'light'
-    }} >
+      textDecoration: props.leaf.underline ? 'underline' : 'light',
+    }} 
+    className={props.leaf.inlineCode ? 'font-mono bg-editr-light-grey text-editr-black' : null}
+    >
       {props.children}
     </span>
   )
