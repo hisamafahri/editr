@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Header from '../components/Header'
-import StyleBar from '../components/StyleBar'
 import React, { useCallback, useMemo, useState } from 'react'
 import { createEditor, Editor, Text, Transforms } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
@@ -256,13 +255,12 @@ export default function Home() {
         <title>Editr. - yet another simple Rich Text Editor</title>
       </Head>
       <Header />
-      <div className='flex flex-col items-center justify-center'>
-        <div className='flex flex-col items-center justify-center w-min'>
-          <StyleBar />
-          <hr className='bg-editr-light-grey h-0.5 w-full mt-2 mb-12' />
+      <div className='flex items-center justify-center'>
+        <div className='flex flex-col items-center justify-center w-1/2'>
+
           <Slate editor={editor} value={value} onChange={newValue => setValue(newValue)}>
             <Editable
-              className='font-light font-rubik w-full'
+              className='font-light font-rubik w-full mt-14'
               renderElement={renderElement}
               renderLeaf={renderLeaf}
               onKeyDown={event => {
