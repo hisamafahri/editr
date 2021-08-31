@@ -189,12 +189,41 @@ export default function Home() {
 
   const [value, setValue] = useState([
     {
+      type: 'h1',
+      children: [{ text: 'This is an H1. You can click Ctrl + 1.' }],
+    },
+    {
+      type: 'h2',
+      children: [{ text: 'This is an H2. You can click Ctrl + 2.\n' }],
+    },
+    {
       type: 'paragraph',
-      children: [{ text: 'A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph. A line of text in a paragraph.\n\n' }],
+      children: [
+        { text: 'A line of text in a paragraph. ' },
+        { text: 'And this is a bold text (Ctrl + B). ', bold: true },
+        { text: 'A line of text in a paragraph. ' },
+        { text: 'And this is an italic text (Ctrl + I). ', italic: true },
+        { text: 'A line of text in a paragraph. ' },
+        { text: 'And this is an underlined text (Ctrl + U). ', underline: true },
+        { text: 'A line of text in a paragraph. ' },
+        { text: 'And some codes here (Ctrl + Q).', inlineCode: true }
+      ],
+    },
+    {
+      type: 'leftAlign',
+      children: [{ text: '\nThis is a left aligned text. You can click Ctrl + L.\n' }],
+    },
+    {
+      type: 'centerAlign',
+      children: [{ text: 'This is a center aligned text. You can click Ctrl + E.\n' }],
+    },
+    {
+      type: 'rightAlign',
+      children: [{ text: 'This is a right aligned text. You can click Ctrl + R.\n' }],
     },
     {
       type: 'code',
-      children: [{ text: 'console.log("Hello, world!");' }],
+      children: [{ text: '\nconsole.log("Hello, world!"); // You can click Ctrl + `\n' }],
     },
   ])
 
@@ -307,6 +336,7 @@ export default function Home() {
           </Slate>
         </div>
       </div>
+      <div className='h-56'></div>
     </>
   )
 }
@@ -367,8 +397,8 @@ const H2Element = props => {
 
 const CodeElement = props => {
   return (
-    <pre {...props.attributes} className='bg-editr-dark-blue'>
-      <code className='whitespace-pre-wrap text-editr-white font-mono px-4 my-4'>{props.children}</code>
+    <pre {...props.attributes} className='bg-editr-dark-blue px-4'>
+      <code className='whitespace-pre-wrap text-editr-white font-mono'>{props.children}</code>
     </pre>
   )
 }
