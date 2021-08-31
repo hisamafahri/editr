@@ -73,6 +73,22 @@ const CustomEditor = {
     return !!match
   },
 
+  isH1Active(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'h1',
+    })
+
+    return !!match
+  },
+
+  isH2Active(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'h2',
+    })
+
+    return !!match
+  },
+
   // BORDER =================================================================================================================
 
   toggleBoldMark(editor) {
@@ -148,6 +164,24 @@ const CustomEditor = {
       { match: n => Text.isText(n), split: true }
     )
   },
+
+  toggleH1(editor) {
+    const isActive = CustomEditor.isH1Active(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'h1' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
+
+  toggleH2(editor) {
+    const isActive = CustomEditor.isH2Active(editor)
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'h2' },
+      { match: n => Editor.isBlock(editor, n) }
+    )
+  },
 }
 
 export default function Home() {
@@ -178,6 +212,10 @@ export default function Home() {
         return <CenterAlignElement {...props} />
       case 'rightAlign':
         return <RightAlignElement {...props} />
+      case 'h1':
+        return <H1Element {...props} />
+      case 'h2':
+        return <H2Element {...props} />
       default:
         return <DefaultElement {...props} />
     }
@@ -251,6 +289,18 @@ export default function Home() {
                     CustomEditor.toggleInlineCode(editor)
                     break
                   }
+
+                  case '1': {
+                    event.preventDefault()
+                    CustomEditor.toggleH1(editor)
+                    break
+                  }
+
+                  case '2': {
+                    event.preventDefault()
+                    CustomEditor.toggleH2(editor)
+                    break
+                  }
                 }
               }}
             />
@@ -267,8 +317,8 @@ const Leaf = props => {
       fontWeight: props.leaf.bold ? 'bold' : 'light',
       fontStyle: props.leaf.italic ? 'italic' : 'light',
       textDecoration: props.leaf.underline ? 'underline' : 'light',
-    }} 
-    className={props.leaf.inlineCode ? 'font-mono bg-editr-light-grey text-editr-black' : null}
+    }}
+      className={props.leaf.inlineCode ? 'font-mono bg-editr-dark-blue text-editr-white' : null}
     >
       {props.children}
     </span>
@@ -296,6 +346,22 @@ const RightAlignElement = props => {
     <div {...props.attributes} className='text-right'>
       {props.children}
     </div>
+  )
+}
+
+const H1Element = props => {
+  return (
+    <h1 {...props.attributes} className='text-4xl font-bold rounded'>
+      {props.children}
+    </h1>
+  )
+}
+
+const H2Element = props => {
+  return (
+    <h2 {...props.attributes} className='text-2xl font-bold rounded'>
+      {props.children}
+    </h2>
   )
 }
 
